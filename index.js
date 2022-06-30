@@ -28,18 +28,21 @@ app.use(cors());
 app.use(express.json());
 
 
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.uvrai.mongodb.net/?retryWrites=true&w=majority`;
-// const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rjiyy.mongodb.net/?retryWrites=true&w=majority`;
+
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 const run = async () => {
     try {
-        /* await client.connect();
-        const toolCollection = client.db('sks-inc').collection('tools');
-        const userCollection = client.db('sks-inc').collection('users');
-        const orderCollection = client.db('sks-inc').collection('orders');
-        const paymentCollection = client.db('sks-inc').collection('payments');
-        const reviewCollection = client.db('sks-inc').collection('reviews'); */
+        await client.connect();
 
+        const userCollection = client.db('power-hack').collection('users');
+
+        //load all users from database
+        app.get('/users', async (req, res) => {
+            const users = await userCollection.find().toArray();
+            res.send(users);
+        });
     }
     finally {
 
