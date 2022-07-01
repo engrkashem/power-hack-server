@@ -50,7 +50,10 @@ const run = async () => {
         //Load bills pagewise
         app.get('/bill', async (req, res) => {
             const result = await billCollection.find().toArray();
-            res.send(result);
+            let sum = 0;
+            result.map(r => sum = r.amount);
+            console.log(result);
+            res.send({ result, sum });
         })
 
         //post/insert bill to database
