@@ -37,11 +37,22 @@ const run = async () => {
         await client.connect();
 
         const userCollection = client.db('power-hack').collection('users');
+        const billCollection = client.db('power-hack').collection('bills');
 
-        //load all users from database
-        app.get('/users', async (req, res) => {
-            const users = await userCollection.find().toArray();
-            res.send(users);
+        //post/insert bill to database
+        app.post('/bill', verifyToken, async (req, res) => {
+            const bill = req.body;
+            const result = await billCollection.insertOne(bill);
+            res.send(result);
+        })
+
+        //verify user to authenticate
+        app.get('/user/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email: email };
+            const result = await userCollection.findOne(query);
+            const secretToken = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
+            res.send({ result, secretToken });
         });
 
         //creating or updating user
