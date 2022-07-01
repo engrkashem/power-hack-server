@@ -39,6 +39,20 @@ const run = async () => {
         const userCollection = client.db('power-hack').collection('users');
         const billCollection = client.db('power-hack').collection('bills');
 
+        //delete a bill
+        app.delete('/bill/:id', verifyToken, async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await billCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        //Load bills pagewise
+        app.get('/bill', async (req, res) => {
+            const result = await billCollection.find().toArray();
+            res.send(result);
+        })
+
         //post/insert bill to database
         app.post('/bill', verifyToken, async (req, res) => {
             const bill = req.body;
